@@ -1,10 +1,12 @@
-# CLUSTER
+# FILE SYSTEM 
 
-So, the main purpose of this project is deploy API in several servers.
-Some thoughts:
-- data server, like [file-transfer](https://github.com/f1le-transfer) but simpler
+So, the main purpose of this project is practice to create and deploy API on several servers.
+
+Practice Ideas:
 - VPN
 - A subnet simulator
 - Network load balancing System
-- Multi file upload System
 - File Transfer Protocol
+- data server, like [file-transfer](https://github.com/f1le-transfer) but simpler
+
+And I decided to create a simplified multi-user file system.
