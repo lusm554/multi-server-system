@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 # Find .env file
 basedir = path.abspath(path.dirname(__file__))
-load_dotenv(path.join(path.dirname(getcwd()), 'config', '.env'))
+load_dotenv(path.join(path.dirname(basedir), 'config', '.env'))
 
 # Add env keys
 DB_USERNAME = environ.get('DB_USERNAME')
