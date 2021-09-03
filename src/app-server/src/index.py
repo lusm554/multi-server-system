@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, render_template, request as req
 from flask_cors import CORS
-from blueprint_module import users_bp
+from src.blueprint_module import users_bp
 
 app = Flask(__name__,
             static_url_path='',
