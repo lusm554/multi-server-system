@@ -13,6 +13,7 @@ except Exception as main_conn_err:
         print(f'Database {DB_NAME} does not exist, creating...')
         conn = psycopg2.connect(conn_url[0:len(conn_url) - len(DB_NAME)])
         ManageDB(conn).setupDatabase()
+        conn = psycopg2.connect(conn_url)
     except Exception as sub_conn_err:
         raise sub_conn_err
 

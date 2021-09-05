@@ -13,3 +13,5 @@ class ManageDB:
             print('The database is built.')
         except Exception as e:
             raise e
+        finally:
+            self.conn.close()
