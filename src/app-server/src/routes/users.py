@@ -7,7 +7,7 @@ router = Blueprint('users', __name__, url_prefix='/user')
 def hello():
     try:
         cur = conn.cursor()
-        cur.execute('select * from test')
+        cur.execute('select * from users')
         rows = cur.fetchall()
         cur.close()
         return jsonify(rows)

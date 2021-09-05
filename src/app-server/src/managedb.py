@@ -15,3 +15,13 @@ class ManageDB:
             raise e
         finally:
             self.conn.close()
+
+    def createTables(self):
+        try:
+            cur = self.conn.cursor()
+            cur.execute(open(path.join(self.__sql_dir__, 'create_tables.sql'), 'r').read())
+            self.conn.commit()
+            print('The tables created.')
+        except Exception as e:
+            raise e
+    

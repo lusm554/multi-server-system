@@ -6,6 +6,7 @@ conn_url = f'postgresql://{DB_USERNAME}:{DB_PWD}@{DB_HOSTNAME}:{DB_PORT}/{DB_NAM
 
 try:
     conn = psycopg2.connect(conn_url)
+    print('Database exists, skipping creation.')
 except Exception as main_conn_err:
     if not str(main_conn_err).startswith(f'FATAL:  database "{DB_NAME}" does not exist'):
         raise main_conn_err
@@ -14,6 +15,7 @@ except Exception as main_conn_err:
         conn = psycopg2.connect(conn_url[0:len(conn_url) - len(DB_NAME)])
         ManageDB(conn).setupDatabase()
         conn = psycopg2.connect(conn_url)
+        ManageDB(conn).createTables()
     except Exception as sub_conn_err:
         raise sub_conn_err
 
