@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="index.css">
+  <title>Onlin file system</title>
+</head>
+<body>
+  <div>
+    <h1>Cloud Storage</h1>
+  </div>
+  <div>
+    <input type="button" value="Sign up" id="signup">
+    <input type="button" value="Sign in" id="signin">
+  </div>
+  <script>
+    const SIGNUP_BTN = document.getElementById('signup')
+    const SIGNIN_BTN = document.getElementById('signin')
+
+    SIGNUP_BTN.addEventListener('click', () => {
+      console.log('signup')
+    })
+
+    SIGNIN_BTN.addEventListener('click', () => {
+      console.log('signin')
+    })
+  </script>
+</body>
+</html>
