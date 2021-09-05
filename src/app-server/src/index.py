@@ -6,6 +6,7 @@ app = Flask(__name__,
             static_url_path='',
             template_folder='static',
             static_folder='static')
+app.url_map.strict_slashes = False
 
 # add prefix '/api/v1' for routes registered in
 api_bp = Blueprint('api-v1', __name__, url_prefix='/api/v1')
