@@ -1,9 +1,9 @@
 from flask import Blueprint, jsonify
 from src.db import conn
 
-bp = Blueprint('users', __name__, url_prefix='/user')
+router = Blueprint('users', __name__, url_prefix='/user')
 
-@bp.route('/')
+@router.route('/')
 def hello():
     try:
         cur = conn.cursor()
