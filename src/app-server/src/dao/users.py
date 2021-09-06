@@ -21,7 +21,7 @@ class UsersDAO:
         created_at = updated_at = datetime.now(timezone.utc)
         cur = conn.cursor()
         query = 'insert into users (username, password, created_at, updated_at) \
-                values (%s, %s, %s::timestamp, %s::timestamp);'
+                 values (%s, %s, %s::timestamp, %s::timestamp);'
         cur.execute(query, (username, password, created_at, updated_at))
         conn.commit()
         '''
@@ -43,7 +43,21 @@ class UsersDAO:
                 '
         cur.execute(query, (username,))
         data = cur.fetchone()
+        cur.close()
         if data is None:
             return False
         return {key: val for key, val in zip(['username', 'created_at', 'last_login_at'], data)}
         
+    
+    def getWithPwd(username):
+        cur = conn.cursor()
+        query = 'select * from users \
+                 where               \
+                    username = %s    \
+                '
+        cur.execute(query, (username,))
+        data = cur.fetchone()
+        colnames = [desc[0] for desc in cur.description]
+        cur.close()
+        return {key: val for key, val in zip(colnames, data)}
+
