@@ -1,4 +1,3 @@
-import psycopg2
 from datetime import datetime, timezone
 from src.db import conn
 
@@ -31,5 +30,18 @@ class UsersDAO:
         '''
         
 
-    #def get(username, password):
+    def get(username):
+        cur = conn.cursor()
+        query = 'select           \
+                    username,     \
+                    created_at,   \
+                    last_login_at \
+                 from             \
+                    users         \
+                 where            \
+                    username = %s \
+                '
+        cur.execute(query, (username,))
+        data = cur.fetchone()
+        return {key: val for key, val in zip(['username', 'created_at', 'last_login_at'], data)}
         

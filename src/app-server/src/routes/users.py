@@ -30,9 +30,18 @@ def signup():
         if UsersDAO.isUserExist(data['username']):
             return Response(status=409)
         UsersDAO.add(**data)     
-        return Response(status=201)
+        return Response(status=204)
     except Exception as e:
-        print(e)
         srv_err_code = Response(status=500)
         return srv_err_code
+
+@router.route('/<user_name>')
+def get(user_name):
+    try:
+        data = UsersDAO.get(user_name)
+        print(data)
+        return jsonify(data), 200
+    except Exception as e:
+        print(e)
+        return Response(status=500)
 
