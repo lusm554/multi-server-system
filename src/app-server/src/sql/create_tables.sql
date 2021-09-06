@@ -13,6 +13,12 @@ create table if not exists users (
   last_login_at timestamp
 );
 
+create table if not exists sessions (
+  user_id bigint references users(user_id) unique,
+  created_at timestamp not null,
+  duration int not null,
+  token varchar not null
+);
 
 create table if not exists objects (
   object_id bigint generated always as identity primary key,
