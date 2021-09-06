@@ -39,7 +39,8 @@ def signup():
 def get(user_name):
     try:
         data = UsersDAO.get(user_name)
-        print(data)
+        if not data:
+            return Response(status=404)
         return jsonify(data), 200
     except Exception as e:
         print(e)

@@ -43,5 +43,7 @@ class UsersDAO:
                 '
         cur.execute(query, (username,))
         data = cur.fetchone()
+        if data is None:
+            return False
         return {key: val for key, val in zip(['username', 'created_at', 'last_login_at'], data)}
         
