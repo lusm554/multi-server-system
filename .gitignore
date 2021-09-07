@@ -1,6 +1,6 @@
 *.swp
 __pycache__
-# dev files
-_*
+_* 
 !__init__.py
 .env
+.idea
