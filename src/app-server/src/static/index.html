@@ -14,18 +14,66 @@
   <div>
     <input type="button" value="Sign up" id="signup">
     <input type="button" value="Sign in" id="signin">
+    <input type="button" value="Log out" id="logout">
   </div>
   <script>
     const SIGNUP_BTN = document.getElementById('signup')
     const SIGNIN_BTN = document.getElementById('signin')
+    const LOGOUT_BTN = document.getElementById('logout')
 
-    SIGNUP_BTN.addEventListener('click', () => {
-      console.log('signup')
-    })
+    SIGNUP_BTN.addEventListener('click', signup)
+    SIGNIN_BTN.addEventListener('click', signin)
+    LOGOUT_BTN.addEventListener('click', logout)
 
-    SIGNIN_BTN.addEventListener('click', () => {
-      console.log('signin')
-    })
+    function get_data() {
+      let username = prompt('username')
+      let password = prompt('password')
+      return { username, password }
+    }
+
+    function signup() {
+      let singup_data = get_data()
+      fetch('http://localhost:8080/api/v1/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(singup_data)
+      })
+      .then(res => console.log(res.status))
+    }
+
+    function signin() {
+      let signin_data = get_data()
+      fetch('http://localhost:8080/api/v1/users/session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(signin_data)
+      })
+      .then(async res => {
+        try {
+          console.log('from /api/v1/users', await res.json())
+        } catch (error) {
+          console.log('Res /api/v1/users is not json')
+        }
+        console.log(res.status)
+      })
+    }
+
+    function logout() {
+      let auth_token = prompt('token?')
+      fetch('http://localhost:8080/api/v1/users/session', {
+        method: 'DELETE',
+        headers: {
+          Authorization: auth_token
+        }
+      })
+      .then(res => {
+        console.log(res.status)
+      })
+    }
   </script>
 </body>
 </html>
