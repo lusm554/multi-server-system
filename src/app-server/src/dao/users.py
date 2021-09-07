@@ -4,8 +4,8 @@ from src.db import conn
 def __is_exist__(table, row, val):
     cur = conn.cursor()
     query = 'select exists (           \
-        select 1 from {} where {} = %s \
-    )'
+                select 1 from {} where {} = %s \
+             )'
     cur.execute(query.format(table, row), (val,))
     isexist = cur.fetchone()[0]
     cur.close()
