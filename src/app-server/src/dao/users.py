@@ -1,37 +1,22 @@
 from datetime import datetime, timezone
 from src.db import conn
+from .dao import DAO
 
-def __is_exist__(table, row, val):
-    cur = conn.cursor()
-    query = 'select exists (           \
-                select 1 from {} where {} = %s \
-             )'
-    cur.execute(query.format(table, row), (val,))
-    isexist = cur.fetchone()[0]
-    cur.close()
-    return isexist
+class UsersDAO(DAO):
+    def __init__(self):
+        self.table = 'users'
+        super(UsersDAO, self).__init__(self.table)
 
+    def isUserExist(self, name):
+        return self.__is_exist__('username', name)
 
-class UsersDAO:
-    def isUserExist(name):
-        return __is_exist__('users', 'username', name)
-
-
-    def add(username, password):
+    def add(self, username, password):
         created_at = updated_at = datetime.now(timezone.utc)
-        cur = conn.cursor()
         query = 'insert into users (username, password, created_at, updated_at) \
                  values (%s, %s, %s::timestamp, %s::timestamp);'
-        cur.execute(query, (username, password, created_at, updated_at))
-        conn.commit()
-        '''
-        cur.execute('select * from users where username = %s', (username,))
-        return cur.fetchone()
-        '''
-        
+        return self.__perform_db_req__(query, (username, password, created_at, updated_at))
 
-    def get(username):
-        cur = conn.cursor()
+    def get(self, username):
         query = 'select           \
                     username,     \
                     created_at,   \
@@ -41,23 +26,17 @@ class UsersDAO:
                  where            \
                     username = %s \
                 '
-        cur.execute(query, (username,))
-        data = cur.fetchone()
-        cur.close()
+        data = self.__perform_db_req__(query, (username,))
         if data is None:
             return False
         return {key: val for key, val in zip(['username', 'created_at', 'last_login_at'], data)}
-        
     
-    def getWithPwd(username):
-        cur = conn.cursor()
+    def getWithPwd(self, username):
         query = 'select * from users \
                  where               \
                     username = %s    \
                 '
-        cur.execute(query, (username,))
-        data = cur.fetchone()
-        colnames = [desc[0] for desc in cur.description]
-        cur.close()
-        return {key: val for key, val in zip(colnames, data)}
+        data = self.__perform_db_req__(query, (username,), with_description=True)
+        colnames = [desc[0] for desc in data['desc']]
+        return {key: val for key, val in zip(colnames, data['content'])}
 

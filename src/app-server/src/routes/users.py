@@ -11,6 +11,8 @@ from flask import (
 )
 
 SECRET = 'secret...'
+Users = UsersDAO()
+Sessions = SessionsDAO()
 router = Blueprint('users', __name__, url_prefix='/users')
 
 def validate_json(f):
@@ -31,9 +33,9 @@ def validate_json(f):
 def signup():
     try:
         data = req.get_json()
-        if UsersDAO.isUserExist(data['username']):
+        if Users.isUserExist(data['username']):
             return Response(status=409)
-        UsersDAO.add(**data)     
+        Users.add(**data)
         return Response(status=204)
     except Exception as e:
         return Response(status=500)
@@ -43,35 +45,35 @@ def signup():
 def signin():
     try:
         data = req.get_json()
-        if not UsersDAO.isUserExist(data['username']):
+        if not Users.isUserExist(data['username']):
             return Response(status=409)
-        
         EXP = 3600
         time = datetime.timestamp(datetime.now()) + EXP
 
-        user = UsersDAO.getWithPwd(data['username'])
+        user = Users.getWithPwd(data['username'])
         if user['password'] != data['password']:
             return Response(status=403)
 
         jwtToken = jwt.encode({'exp': time}, SECRET, algorithm='HS256') 
-        SessionsDAO.add(user['user_id'], 3600, jwtToken)
+        Sessions.add(user['user_id'], 3600, jwtToken)
 
         return jsonify({'auth_token': jwtToken}), 200
     except Exception as e:
+        print(1, e)
         return Response(status=500)
 
 @router.route('/session', methods=['DELETE'])
 def signout():
     try:
         req_token = req.headers.get('Authorization')
-        if not SessionsDAO.isTokenExist(req_token):
+        if not Sessions.isTokenExist(req_token):
             return Response(status=400)
         try:
             jwt.decode(req_token, SECRET, algorithms=["HS256"])
         except jwt.ExpiredSignatureError:
             return jsonify({'msg', 'Token expired.'}), 401
         
-        SessionsDAO.remove(req_token)
+        Sessions.remove(req_token)
         return 'OK', 200
     except Exception as e:
         return '', 500
@@ -80,7 +82,7 @@ def signout():
 @router.route('/<user_name>')
 def get(user_name):
     try:
-        data = UsersDAO.get(user_name)
+        data = Users.get(user_name)
         if not data:
             return Response(status=404)
         return jsonify(data), 200
