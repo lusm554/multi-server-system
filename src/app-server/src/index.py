@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, render_template, request as req
 from flask_cors import CORS
-from src.routes import users_route 
+from src.routes import users_route, chunks_route
 
 app = Flask(__name__,
             static_url_path='',
@@ -11,6 +11,7 @@ app.url_map.strict_slashes = False
 # add prefix '/api/v1' for routes registered in
 api_bp = Blueprint('api-v1', __name__, url_prefix='/api/v1')
 api_bp.register_blueprint(users_route)
+api_bp.register_blueprint(chunks_route)
 
 # add API routes
 app.register_blueprint(api_bp)
