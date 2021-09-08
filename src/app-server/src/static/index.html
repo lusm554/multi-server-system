@@ -54,7 +54,9 @@
       })
       .then(async res => {
         try {
-          console.log('from /api/v1/users', await res.json())
+          let j = await res.json()
+          console.log('from /api/v1/users', j)
+          console.log(j.auth_token)
         } catch (error) {
           console.log('Res /api/v1/users is not json')
         }
