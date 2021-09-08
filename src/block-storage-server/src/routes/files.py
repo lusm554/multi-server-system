@@ -3,8 +3,8 @@ from flask import (
     jsonify,
     request as req
 )
-
 router = Blueprint('files', __name__, url_prefix='/chunks')
+
 
 @router.route('/')
 def get():
