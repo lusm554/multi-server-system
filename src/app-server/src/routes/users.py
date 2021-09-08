@@ -61,8 +61,8 @@ def signin():
 
         payload = {
             'user': {
-                'user_id': user['user_id'],
-                'username': user['username']
+                'id': user['user_id'],
+                'name': user['username']
             },
             'exp': time
         }
