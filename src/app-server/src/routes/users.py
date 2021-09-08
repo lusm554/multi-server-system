@@ -56,7 +56,14 @@ def signin():
         if user['password'] != data['password']:
             return Response(status=403)
 
-        jwtToken = jwt.encode({'exp': time}, Sessions.SECRET, algorithm='HS256')
+        payload = {
+            'user': {
+                'user_id': user['user_id'],
+                'username': user['username']
+            },
+            'exp': time
+        }
+        jwtToken = jwt.encode(payload, Sessions.SECRET, algorithm='HS256')
         Sessions.add(user['user_id'], 3600, jwtToken)
 
         return jsonify({'auth_token': jwtToken}), 200
@@ -71,7 +78,7 @@ def signout():
         if not Sessions.isTokenExist(req_token):
             return Response(status=400)
         try:
-            jwt.decode(req_token, SECRET, algorithms=["HS256"])
+            jwt.decode(req_token, Sessions.SECRET, algorithms=["HS256"])
         except jwt.ExpiredSignatureError:
             return jsonify({'msg', 'Token expired.'}), 401
 
