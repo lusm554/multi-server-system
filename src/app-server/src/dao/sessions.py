@@ -5,6 +5,7 @@ from .dao import DAO
 class SessionsDAO(DAO):
     def __init__(self):
         self.table = 'sessions'
+        self.SECRET = 'secret...'
         super(SessionsDAO, self).__init__(self.table)
     
     def isTokenExist(self, token):

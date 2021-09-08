@@ -10,7 +10,6 @@ from flask import (
     request as req
 )
 
-SECRET = 'secret...'
 Users = UsersDAO()
 Sessions = SessionsDAO()
 router = Blueprint('users', __name__, url_prefix='/users')
@@ -57,7 +56,7 @@ def signin():
         if user['password'] != data['password']:
             return Response(status=403)
 
-        jwtToken = jwt.encode({'exp': time}, SECRET, algorithm='HS256')
+        jwtToken = jwt.encode({'exp': time}, Sessions.SECRET, algorithm='HS256')
         Sessions.add(user['user_id'], 3600, jwtToken)
 
         return jsonify({'auth_token': jwtToken}), 200
