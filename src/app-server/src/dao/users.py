@@ -17,6 +17,14 @@ class UsersDAO(DAO):
         self.__perform_db_req__(query, (username, password, created_at, updated_at))
         return self.getFullData(username)
 
+    def updateLoginDate(self, user_id):
+        updated_at = datetime.now(timezone.utc)
+        query = 'update users           \
+                 set last_login_at = %s \
+                 where user_id = %s     \
+                '
+        return self.__perform_db_req__(query, (updated_at, user_id))
+
     def get(self, username):
         query = 'select           \
                     username,     \

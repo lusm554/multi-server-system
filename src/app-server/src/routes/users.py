@@ -3,6 +3,7 @@ from datetime import datetime
 import jwt
 from src.dao.users import UsersDAO
 from src.dao.sessions import SessionsDAO
+from src.dao.files import FilesDAO
 from flask import (
     Blueprint,
     jsonify,
@@ -12,6 +13,7 @@ from flask import (
 
 Users = UsersDAO()
 Sessions = SessionsDAO()
+Files = FilesDAO()
 router = Blueprint('users', __name__, url_prefix='/users')
 
 
@@ -37,6 +39,7 @@ def signup():
         if Users.isUserExist(data['username']):
             return Response(status=409)
         user = Users.add(data['username'], data['password'])
+        Files.createObject(user['user_id'], 'folder', None, f'root_{user["user_id"]}')
         return Response(status=204)
     except:
         return Response(status=500)
@@ -65,6 +68,7 @@ def signin():
         }
         jwtToken = jwt.encode(payload, Sessions.SECRET, algorithm='HS256')
         Sessions.add(user['user_id'], 3600, jwtToken)
+        Users.updateLoginDate(user['user_id'])
 
         return jsonify({'auth_token': jwtToken}), 200
     except:
