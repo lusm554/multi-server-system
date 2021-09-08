@@ -14,7 +14,8 @@ class UsersDAO(DAO):
         created_at = updated_at = datetime.now(timezone.utc)
         query = 'insert into users (username, password, created_at, updated_at) \
                  values (%s, %s, %s::timestamp, %s::timestamp);'
-        return self.__perform_db_req__(query, (username, password, created_at, updated_at))
+        self.__perform_db_req__(query, (username, password, created_at, updated_at))
+        return self.getFullData(username)
 
     def get(self, username):
         query = 'select           \
@@ -31,7 +32,7 @@ class UsersDAO(DAO):
             return False
         return {key: val for key, val in zip(['username', 'created_at', 'last_login_at'], data)}
     
-    def getWithPwd(self, username):
+    def getFullData(self, username):
         query = 'select * from users \
                  where               \
                     username = %s    \

@@ -36,7 +36,7 @@ def signup():
         data = req.get_json()
         if Users.isUserExist(data['username']):
             return Response(status=409)
-        Users.add(**data)
+        user = Users.add(data['username'], data['password'])
         return Response(status=204)
     except:
         return Response(status=500)
@@ -52,7 +52,7 @@ def signin():
         EXP = 3600
         time = datetime.timestamp(datetime.now()) + EXP
 
-        user = Users.getWithPwd(data['username'])
+        user = Users.getFullData(data['username'])
         if user['password'] != data['password']:
             return Response(status=403)
 
