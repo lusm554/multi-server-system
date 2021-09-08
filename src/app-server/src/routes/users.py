@@ -1,12 +1,12 @@
 from functools import wraps
-from datetime import datetime 
+from datetime import datetime
 import jwt
 from src.dao.users import UsersDAO
-from src.dao.sessions import SessionsDAO 
+from src.dao.sessions import SessionsDAO
 from flask import (
-    Blueprint, 
-    jsonify, 
-    Response, 
+    Blueprint,
+    jsonify,
+    Response,
     request as req
 )
 
@@ -15,6 +15,7 @@ Users = UsersDAO()
 Sessions = SessionsDAO()
 router = Blueprint('users', __name__, url_prefix='/users')
 
+
 def validate_json(f):
     @wraps(f)
     def wrapper(*args, **kw):
@@ -22,11 +23,12 @@ def validate_json(f):
             assert req.is_json
             data = req.get_json()
             assert 'username' in data and 'password' in data
-        except Exception as e:
+        except:
             msg = 'payload must be a valid json'
             return jsonify({"error": msg}), 400
         return f(*args, **kw)
     return wrapper
+
 
 @router.route('/', methods=['POST'])
 @validate_json
@@ -37,8 +39,9 @@ def signup():
             return Response(status=409)
         Users.add(**data)
         return Response(status=204)
-    except Exception as e:
+    except:
         return Response(status=500)
+
 
 @router.route('/session', methods=['POST'])
 @validate_json
@@ -54,13 +57,13 @@ def signin():
         if user['password'] != data['password']:
             return Response(status=403)
 
-        jwtToken = jwt.encode({'exp': time}, SECRET, algorithm='HS256') 
+        jwtToken = jwt.encode({'exp': time}, SECRET, algorithm='HS256')
         Sessions.add(user['user_id'], 3600, jwtToken)
 
         return jsonify({'auth_token': jwtToken}), 200
-    except Exception as e:
-        print(1, e)
+    except:
         return Response(status=500)
+
 
 @router.route('/session', methods=['DELETE'])
 def signout():
@@ -72,11 +75,11 @@ def signout():
             jwt.decode(req_token, SECRET, algorithms=["HS256"])
         except jwt.ExpiredSignatureError:
             return jsonify({'msg', 'Token expired.'}), 401
-        
+
         Sessions.remove(req_token)
         return 'OK', 200
-    except Exception as e:
-        return '', 500
+    except:
+        return Response(status=500)
 
 
 @router.route('/<user_name>')
@@ -86,6 +89,5 @@ def get(user_name):
         if not data:
             return Response(status=404)
         return jsonify(data), 200
-    except Exception as e:
+    except:
         return Response(status=500)
-
