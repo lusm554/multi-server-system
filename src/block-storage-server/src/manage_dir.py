@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 class ManageDir:
     def __init__(self, dir_name = '__files__'):
@@ -16,3 +17,9 @@ class ManageDir:
 
     def save(self, file, name):
         file.save(os.path.join(self.dir_name, name))
+
+    def find(self, name):
+        f = os.path.join(self.dir_name, name)
+        if not Path(f).exists():
+            return False
+        return Path(f).absolute()
