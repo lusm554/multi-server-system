@@ -7,8 +7,18 @@ class FilesDAO(DAO):
         self.table = 'chunks'
         super(FilesDAO, self).__init__(self.table)
 
-    def isChunkExist(self, id):
-        return self.__is_exist__('chunk_id', id)
+    def isChunkExist(self, user_id, chunk_url):
+        query = 'select exists (                                    \
+                    select 1                                        \
+                    from                                            \
+                        objects o                                   \
+                    inner join chunks c                             \
+                        on o.object_id = c.object_id                \
+                    where                                           \
+                        o.user_id = %s and c.url = %s   \
+                 )                                                  \
+                '
+        return self.__perform_db_req__(query, (user_id, chunk_url))[0]
 
     def createObject(self, user_id, object_type, parent_object_id, name):
         created_at = updated_at = datetime.now(timezone.utc)
