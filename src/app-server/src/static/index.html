@@ -16,14 +16,38 @@
     <input type="button" value="Sign in" id="signin">
     <input type="button" value="Log out" id="logout">
   </div>
+
+  <input type="file" id="file_input"/>
+  <input type="button" value="Send" id="send_file">
+
   <script>
     const SIGNUP_BTN = document.getElementById('signup')
     const SIGNIN_BTN = document.getElementById('signin')
     const LOGOUT_BTN = document.getElementById('logout')
+    const FILE = document.getElementById('send_file')
 
+    FILE.addEventListener('click', upload)
     SIGNUP_BTN.addEventListener('click', signup)
     SIGNIN_BTN.addEventListener('click', signin)
     LOGOUT_BTN.addEventListener('click', logout)
+
+    function upload(e) {
+      let file = document.getElementById('file_input').files[0]
+      let chunk_url = file.name
+
+      const data = new FormData()
+      data.append('file', file)
+
+      let url = (chunk) => `http://localhost:8080/api/v1/chunks/${chunk}`
+      fetch(url(chunk_url), {
+        method: 'POST',
+        headers: {
+          Authorization: prompt('token?')
+        },
+        body: data
+      })
+      .then(res => console.log(res.status))
+    }
 
     function get_data() {
       let username = prompt('username')
