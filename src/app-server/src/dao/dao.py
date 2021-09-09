@@ -20,7 +20,7 @@ class DAO(object):
             cur.execute(query, args)
             conn.commit()
             data = cur.fetchone()
-            if kw['with_description']:
+            if kw and kw['with_description']:
                 data = {
                     'content': data,
                     'desc': cur.description
