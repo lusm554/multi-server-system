@@ -17,19 +17,24 @@
     <input type="button" value="Log out" id="logout">
   </div>
 
-  <input type="file" id="file_input"/>
-  <input type="button" value="Send" id="send_file">
+  <div>
+    <input type="file" id="file_input"/>
+    <input type="button" value="Send" id="send_file">
+    <input type="button" value="Download" id="download">
+  </div>
 
   <script>
     const SIGNUP_BTN = document.getElementById('signup')
     const SIGNIN_BTN = document.getElementById('signin')
     const LOGOUT_BTN = document.getElementById('logout')
+    const DWN_BTN = document.getElementById('download')
     const FILE = document.getElementById('send_file')
 
     FILE.addEventListener('click', upload)
     SIGNUP_BTN.addEventListener('click', signup)
     SIGNIN_BTN.addEventListener('click', signin)
     LOGOUT_BTN.addEventListener('click', logout)
+    DWN_BTN.addEventListener('click', download)
 
     function upload(e) {
       let file = document.getElementById('file_input').files[0]
@@ -47,6 +52,37 @@
         body: data
       })
       .then(res => console.log(res.status))
+    }
+
+    const saveBlob = (() => {
+      let a = document.createElement('a')
+      a.style = 'display: none'
+      document.body.appendChild(a)
+      return (blob, name) => {
+        let url = window.URL.createObjectURL(blob)
+        a.href = url
+        a.download = name
+        a.click()
+        window.URL.revokeObjectURL(url)
+      }
+    })();
+
+    function download() {
+      let f = prompt('file?')
+      fetch(`http://localhost:8080/api/v1/chunks/${f}`, {
+        headers: {
+          Authorization: prompt('token?')
+        }
+      })
+      .then(async res => {
+        if (res.status == 200) {
+          return res.blob()
+        }
+        throw Error()
+      })
+      .then(blob => {
+        saveBlob(blob, f)
+      })
     }
 
     function get_data() {
