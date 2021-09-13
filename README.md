@@ -15,3 +15,4 @@ And I decided to create a simplified multi-user file system. I'm not going to ma
 - add system of API keys
 - make all operations atomic
 - Chunking Files. Instead of uploading entire file in one go, chunking files in blocks and then uploading each chunk.
+- Make full authorization and authentication, since now passwords are simply stored in dB without processing.
